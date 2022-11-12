@@ -2,7 +2,6 @@ package libiscdhcpd
 
 import (
 	"fmt"
-	"log"
 	"testing"
 )
 
@@ -24,8 +23,8 @@ func TestLex(t *testing.T) {
 	}{
 		{"examples/000-ubuntu-help.conf"},
 		{"examples/001-isc-dhcp6.conf"},
-		/*{"../libiscdhcpd/examples/000-ubuntu-help.conf"},
-		{"/Users/claes/Code/libiscdhcpd/examples/000-ubuntu-help.conf"},*/
+		{"examples/002-share-doc-dhcpd-example.conf"},
+		{"examples/003-ibm-dhcpd-example.conf"},
 	}
 
 	for _, tt := range tests {
@@ -42,7 +41,6 @@ func TestLex(t *testing.T) {
 			}
 
 			for _, span := range spans {
-				log.Println(span)
 				if span.Type == SpanTypeUnknown {
 					t.Fatalf("found unknown span '%s'", span)
 				}

@@ -71,19 +71,19 @@ const (
 	SpanTypeQuote
 )
 
-type DhcpdLexSpan struct {
+type LexerSpan struct {
 	Start int
 	Stop  int
 	Value string
 	Type  SpanType
 }
 
-func (s DhcpdLexSpan) String() string {
+func (s LexerSpan) String() string {
 	return fmt.Sprintf("%d:%d \"%s\" [%s]", s.Start, s.Stop, s.Value, s.Type)
 }
 
-type DhcpdLexTree struct {
-	Spans []DhcpdLexSpan
+type LexerTree struct {
+	Spans []LexerSpan
 }
 
 func ClassifyCharacter(ch string) SpanType {
@@ -234,6 +234,8 @@ func ClassifyCharacter(ch string) SpanType {
 		return SpanTypeTab
 	case " ":
 		return SpanTypeSpace
+	case "\r":
+		return SpanTypeNewline
 	case "\n":
 		return SpanTypeNewline
 	case "(":
@@ -259,14 +261,14 @@ func ClassifyCharacter(ch string) SpanType {
 	}
 }
 
-func Lex(cfg IscDhcpdConfig) ([]DhcpdLexSpan, error) {
-	lexSpans := make([]DhcpdLexSpan, 0)
+func Lex(cfg IscDhcpdConfig) ([]LexerSpan, error) {
+	lexSpans := make([]LexerSpan, 0)
 
 	if len(cfg.Filedata) == 0 {
 		return lexSpans, errors.New("missing filedate, you need to load a configuration")
 	}
 
-	currLexSpan := DhcpdLexSpan{}
+	currLexSpan := LexerSpan{}
 	currLexSpan.Start = 1
 	prevSpanType := SpanTypeUnknown
 	for idx, data := range cfg.Filedata {
@@ -276,7 +278,7 @@ func Lex(cfg IscDhcpdConfig) ([]DhcpdLexSpan, error) {
 			currLexSpan.Stop = pos - 1
 			currLexSpan.Type = prevSpanType
 			lexSpans = append(lexSpans, currLexSpan)
-			currLexSpan = DhcpdLexSpan{}
+			currLexSpan = LexerSpan{}
 			currLexSpan.Start = pos
 		}
 		currLexSpan.Value = currLexSpan.Value + string(data)

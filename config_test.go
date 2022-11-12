@@ -36,8 +36,8 @@ func TestLoadConfigFromFile(t *testing.T) {
 	}{
 		{"examples/000-ubuntu-help.conf", 1428},
 		{"examples/001-isc-dhcp6.conf", 3456},
-		/*{"../libiscdhcpd/examples/000-ubuntu-help.conf", 1428},
-		{"/Users/claes/Code/libiscdhcpd/examples/000-ubuntu-help.conf", 1428},*/
+		{"examples/002-share-doc-dhcpd-example.conf", 3261},
+		{"examples/003-ibm-dhcpd-example.conf", 3072},
 	}
 
 	for _, tt := range tests {
