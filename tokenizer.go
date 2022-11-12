@@ -38,8 +38,8 @@ const (
 )
 
 type Token struct {
-	Type  TokenType
-	Spans []LexerSpan
+	Type  TokenType   `json:"type"`
+	Spans []LexerSpan `json:"spans"`
 }
 
 func (t *Token) Start() int {
@@ -100,8 +100,6 @@ func TokenizeWords(start int, spans []LexerSpan) (Token, int, error) {
 			break
 		}
 	}
-
-	log.Println(" -- token", token, "--")
 
 	return token, progress, nil
 }

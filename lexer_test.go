@@ -6,7 +6,7 @@ import (
 )
 
 func TestLexWithNoFiledata(t *testing.T) {
-	_, err := Lex(IscDhcpdConfig{})
+	_, err := Lex(DhcpdConfig{})
 	if err == nil {
 		t.Fatalf("want error, got nothing")
 	}

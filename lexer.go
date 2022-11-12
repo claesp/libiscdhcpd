@@ -72,18 +72,14 @@ const (
 )
 
 type LexerSpan struct {
-	Start int
-	Stop  int
-	Value string
-	Type  SpanType
+	Start int      `json:"start"`
+	Stop  int      `json:"stop"`
+	Value string   `json:"value"`
+	Type  SpanType `json:"type"`
 }
 
 func (s LexerSpan) String() string {
 	return fmt.Sprintf("%d:%d \"%s\" [%s]", s.Start, s.Stop, s.Value, s.Type)
-}
-
-type LexerTree struct {
-	Spans []LexerSpan
 }
 
 func ClassifyCharacter(ch string) SpanType {
@@ -261,7 +257,7 @@ func ClassifyCharacter(ch string) SpanType {
 	}
 }
 
-func Lex(cfg IscDhcpdConfig) ([]LexerSpan, error) {
+func Lex(cfg DhcpdConfig) ([]LexerSpan, error) {
 	lexSpans := make([]LexerSpan, 0)
 
 	if len(cfg.Filedata) == 0 {
