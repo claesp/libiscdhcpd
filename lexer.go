@@ -257,7 +257,7 @@ func ClassifyCharacter(ch string) SpanType {
 	}
 }
 
-func Lex(cfg DhcpdConfig) ([]LexerSpan, error) {
+func Lex(cfg DhcpdDocument) ([]LexerSpan, error) {
 	lexSpans := make([]LexerSpan, 0)
 
 	if len(cfg.Filedata) == 0 {

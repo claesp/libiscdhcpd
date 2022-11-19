@@ -5,14 +5,14 @@ import (
 	"os"
 )
 
-type DhcpdConfig struct {
+type DhcpdDocument struct {
 	Filename string  `json:"filename"`
 	Filedata []byte  `json:"filedata"`
 	Tokens   []Token `json:"tokens"`
 }
 
-func LoadConfigFromFile(filename string) (DhcpdConfig, error) {
-	cfg := DhcpdConfig{}
+func LoadConfigFromFile(filename string) (DhcpdDocument, error) {
+	cfg := DhcpdDocument{}
 	if filename == "" {
 		return cfg, errors.New("filename cannot be empty")
 	}
@@ -27,7 +27,7 @@ func LoadConfigFromFile(filename string) (DhcpdConfig, error) {
 	return LoadConfig(cfg)
 }
 
-func LoadConfig(config DhcpdConfig) (DhcpdConfig, error) {
+func LoadConfig(config DhcpdDocument) (DhcpdDocument, error) {
 	spans, sErr := Lex(config)
 	if sErr != nil {
 		return config, sErr
