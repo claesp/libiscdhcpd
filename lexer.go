@@ -274,8 +274,7 @@ func Lex(cfg DhcpdDocument) ([]LexerSpan, error) {
 			currLexSpan.Stop = pos - 1
 			currLexSpan.Type = prevSpanType
 			lexSpans = append(lexSpans, currLexSpan)
-			currLexSpan = LexerSpan{}
-			currLexSpan.Start = pos
+			currLexSpan = LexerSpan{Start: pos}
 		}
 		currLexSpan.Value = currLexSpan.Value + string(data)
 		prevSpanType = currSpanType
