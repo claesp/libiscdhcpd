@@ -58,7 +58,7 @@ func (t *Token) Value() string {
 	return s
 }
 
-func (t Token) String() string {
+func (t *Token) String() string {
 	return fmt.Sprintf("%7d:%7d [%s]: %s", t.Start(), t.Stop(), t.Type, strings.TrimSuffix(t.Value(), "\n"))
 }
 
