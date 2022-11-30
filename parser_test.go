@@ -2,6 +2,7 @@ package libiscdhcpd
 
 import (
 	"fmt"
+	"log"
 	"testing"
 )
 
@@ -41,9 +42,13 @@ func TestParse(t *testing.T) {
 				t.Fatalf("want 'no error', got '%s'", tokErr)
 			}
 
-			_, parErr := Parse(tokens)
+			doc, parErr := Parse(tokens)
 			if parErr != nil {
 				t.Fatalf("want 'no error', got '%s'", tokErr)
+			}
+
+			for _, opt := range doc.Root.Options {
+				log.Println(opt)
 			}
 		})
 	}

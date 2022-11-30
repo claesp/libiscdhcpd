@@ -1,9 +1,10 @@
 package libiscdhcpd
 
+import "C"
 import (
 	"errors"
+	"fmt"
 	"log"
-	"strings"
 )
 
 type ConfigNode interface {
@@ -31,24 +32,34 @@ type Config struct {
 	Root RootNode `json:"dhcpd"`
 }
 
-func ParseUnknown(parts []string) (ConfigNode, error) {
-	return OptionNode{}, nil
+func ParseOption(token Token) (ConfigNode, error) {
+	var opt OptionNode
+
+	for _, span := range token.Spans {
+		switch span.Type {
+		case SpanTypeWord:
+			if opt.Key == "" && span.Value != "option" {
+				opt.Key = span.Value
+			} else {
+				opt.Value = span.Value
+			}
+		}
+	}
+
+	return opt, nil
 }
 
 func ParseDirective(token Token) (ConfigNode, error) {
-	log.Println(token)
-	v := strings.Trim(token.Value(), " \n")
-	parts := strings.Split(v, " ")
-
-	firstPart := parts[0]
-
-	switch firstPart {
-	case "option":
-		node, err := ParseUnknown(parts)
-		return node, err
-	default:
-		node, err := ParseUnknown(parts)
-		return node, err
+	log.Println(token.Spans)
+	for _, span := range token.Spans {
+		switch span.Type {
+		case SpanTypeWord:
+			switch span.Value {
+			case "option":
+				node, err := ParseOption(token)
+				return node, err
+			}
+		}
 	}
 
 	return OptionNode{}, nil
@@ -69,9 +80,14 @@ func Parse(tokens []Token) (Config, error) {
 			if err != nil {
 				break
 			}
-			cfg.Root.Options = append(cfg.Root.Options, node.(OptionNode))
+			switch v := node.(type) {
+			case OptionNode:
+				cfg.Root.Options = append(cfg.Root.Options, node.(OptionNode))
+			default:
+				fmt.Printf("unexpected type %T", v)
+			}
 		}
 	}
 
-	return Config{}, nil
+	return cfg, nil
 }
