@@ -1,10 +1,10 @@
 package libiscdhcpd
 
-import "C"
 import (
 	"errors"
 	"fmt"
 	"log"
+	"net"
 )
 
 type ConfigNode interface {
@@ -12,7 +12,7 @@ type ConfigNode interface {
 }
 
 type RootNode struct {
-	Options []OptionNode
+	Options []ConfigNode
 }
 
 func (n RootNode) Name() string {
@@ -22,6 +22,14 @@ func (n RootNode) Name() string {
 type OptionNode struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
+}
+
+type OptionRoutersNode struct {
+	IPAddresses []net.IP
+}
+
+func (n OptionRoutersNode) Name() string {
+	return "Routers"
 }
 
 func (n OptionNode) Name() string {
@@ -44,6 +52,12 @@ func ParseOption(token Token) (ConfigNode, error) {
 				opt.Value = span.Value
 			}
 		}
+	}
+
+	switch opt.Key {
+	case "routers":
+		ip := net.ParseIP(opt.Value)
+		return OptionRoutersNode{IPAddresses: []net.IP{ip}}, nil
 	}
 
 	return opt, nil
@@ -82,7 +96,7 @@ func Parse(tokens []Token) (Config, error) {
 			}
 			switch v := node.(type) {
 			case OptionNode:
-				cfg.Root.Options = append(cfg.Root.Options, node.(OptionNode))
+				cfg.Root.Options = append(cfg.Root.Options, node)
 			default:
 				fmt.Printf("unexpected type %T", v)
 			}
